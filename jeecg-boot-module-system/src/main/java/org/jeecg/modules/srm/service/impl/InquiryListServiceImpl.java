@@ -149,46 +149,46 @@ public class InquiryListServiceImpl extends ServiceImpl<InquiryListMapper, Inqui
 			inquirySupplierService.saveBatch(suppList);
 
 			//发送邮件
-			List<BasSupplier> supList = iBasSupplierService.listByIds(suppIds);
-			List<BasSupplierContact> contactList = iBasSupplierContactService.list(Wrappers.<BasSupplierContact>query().lambda().
-					in(BasSupplierContact :: getSupplierId,suppIds).
-					eq(BasSupplierContact :: getDelFlag,CommonConstant.DEL_FLAG_0).
-					eq(BasSupplierContact :: getIsDefault,CommonConstant.ACT_SYNC_1));
-			Map<String,BasSupplierContact> contactMap = contactList.stream().collect(Collectors.toMap(BasSupplierContact::getSupplierId, sp->sp));
-			Map<String,BasSupplier> supMap = supList.stream().collect(Collectors.toMap(BasSupplier::getId, sp->sp));
-
-			List<SupplierAccount> accountList = iSupplierAccountService.list(Wrappers.<SupplierAccount>query().lambda().in(SupplierAccount :: getSupplierId,suppIds));
-			Map<String,SupplierAccount> actMap = accountList.stream().collect(Collectors.toMap(SupplierAccount::getSupplierId, sp->sp));
-			for(InquiryRecord entity:inquiryRecordList) {
-				for(String suppId : entity.getSuppIds()){
-					BasSupplier sp = supMap.get(suppId);
-					BasSupplierContact contact = contactMap.get(suppId);
-
-					String context = "["+sp.getName()+"]:" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;你好！" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;我司拟对如下设备进行询价,具体如下：" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;项目标的：["+entity.getProdName()+"];" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;标的数量：["+entity.getQty().stripTrailingZeros().toPlainString()+"];" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;标的交期：["+sdf.format(entity.getLeadTime())+"];" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;相关标的需求请联系["+user.getRealname()+"],电话["+user.getPhone()+"];" +
-							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;请贵司务必于["+sdf.format(inquiryList.getQuotationDeadline())+"]前完成规格确认及报价提交，谢谢！" +
-							"<br><span style='margin-left:300px'>["+depart.getDepartName()+"]</span>";
-
-					if(contact != null && StringUtils.isNotEmpty(contact.getContacterEmail())){
-						List<String> emails = new ArrayList<>();
-						emails.add(contact.getContacterEmail());
-
-						EmailSendMsgHandle emailHandle=new EmailSendMsgHandle();
-
-						emailHandle.sendTemplateMail("询价通知书",context,emails,null);
-					}else{
-						log.error("询价通知书,该供应商没有设置邮箱地址");
-					}
-
-					String accountId = actMap.get(sp.getId()).getId();
-					this.sendNotice(context,accountId,depart.getDepartName());
-				}
-			}
+//			List<BasSupplier> supList = iBasSupplierService.listByIds(suppIds);
+//			List<BasSupplierContact> contactList = iBasSupplierContactService.list(Wrappers.<BasSupplierContact>query().lambda().
+//					in(BasSupplierContact :: getSupplierId,suppIds).
+//					eq(BasSupplierContact :: getDelFlag,CommonConstant.DEL_FLAG_0).
+//					eq(BasSupplierContact :: getIsDefault,CommonConstant.ACT_SYNC_1));
+//			Map<String,BasSupplierContact> contactMap = contactList.stream().collect(Collectors.toMap(BasSupplierContact::getSupplierId, sp->sp));
+//			Map<String,BasSupplier> supMap = supList.stream().collect(Collectors.toMap(BasSupplier::getId, sp->sp));
+//
+//			List<SupplierAccount> accountList = iSupplierAccountService.list(Wrappers.<SupplierAccount>query().lambda().in(SupplierAccount :: getSupplierId,suppIds));
+//			Map<String,SupplierAccount> actMap = accountList.stream().collect(Collectors.toMap(SupplierAccount::getSupplierId, sp->sp));
+//			for(InquiryRecord entity:inquiryRecordList) {
+//				for(String suppId : entity.getSuppIds()){
+//					BasSupplier sp = supMap.get(suppId);
+//					BasSupplierContact contact = contactMap.get(suppId);
+//
+//					String context = "["+sp.getName()+"]:" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;你好！" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;我司拟对如下设备进行询价,具体如下：" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;项目标的：["+entity.getProdName()+"];" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;标的数量：["+entity.getQty().stripTrailingZeros().toPlainString()+"];" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;标的交期：["+sdf.format(entity.getLeadTime())+"];" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;相关标的需求请联系["+user.getRealname()+"],电话["+user.getPhone()+"];" +
+//							"<br>    &nbsp;&nbsp;&nbsp;&nbsp;请贵司务必于["+sdf.format(inquiryList.getQuotationDeadline())+"]前完成规格确认及报价提交，谢谢！" +
+//							"<br><span style='margin-left:300px'>["+depart.getDepartName()+"]</span>";
+//
+//					if(contact != null && StringUtils.isNotEmpty(contact.getContacterEmail())){
+//						List<String> emails = new ArrayList<>();
+//						emails.add(contact.getContacterEmail());
+//
+//						EmailSendMsgHandle emailHandle=new EmailSendMsgHandle();
+//
+//						emailHandle.sendTemplateMail("询价通知书",context,emails,null);
+//					}else{
+//						log.error("询价通知书,该供应商没有设置邮箱地址");
+//					}
+//
+//					String accountId = actMap.get(sp.getId()).getId();
+//					this.sendNotice(context,accountId,depart.getDepartName());
+//				}
+//			}
 
 		}
 
