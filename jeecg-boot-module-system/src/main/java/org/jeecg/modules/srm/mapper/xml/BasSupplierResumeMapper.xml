@@ -6,4 +6,10 @@
 		FROM  bas_supplier_resume
 		WHERE
 			 supp_id = #{mainId} 	</select>
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE
+		FROM  bas_supplier_resume
+		WHERE
+			 supp_id = #{mainId} 	</delete>
 </mapper>

@@ -36,11 +36,7 @@ public class BasSupplierPage extends BasSupplier{
 	private List<BasSupplierFast> basSupplierFastList;
 	private String newSysPwd;
 
-	@ApiModelProperty(value = "资质备注")
-	private java.lang.String resumeRemark;
-	@ApiModelProperty(value = "文件路径")
-	private java.lang.String filePath;
-
-
+	@ApiModelProperty(value = "供应商履历")
+	private List<BasSupplierResume> basSupplierResumeList;
 
 }

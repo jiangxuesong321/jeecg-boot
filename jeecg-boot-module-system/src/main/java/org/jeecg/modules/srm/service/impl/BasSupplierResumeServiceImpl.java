@@ -27,4 +27,9 @@ public class BasSupplierResumeServiceImpl extends ServiceImpl<BasSupplierResumeM
     public List<BasSupplierResume> selectByMainId(String mainId) {
         return basSupplierResumeMapper.selectByMainId(mainId);
     }
+
+    @Override
+    public boolean deleteByMainId(String mainId) {
+        return basSupplierResumeMapper.deleteByMainId(mainId);
+    }
 }

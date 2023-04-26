@@ -122,7 +122,7 @@ public class BasSupplierController {
 		BasSupplier basSupplier = new BasSupplier();
 		BeanUtils.copyProperties(basSupplierPage, basSupplier);
 		basSupplierService.saveMain(basSupplier, basSupplierPage.getBasSupplierContactList(),basSupplierPage.getBasSupplierQualificationList(),
-				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getResumeRemark(), basSupplierPage.getFilePath());
+				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getBasSupplierResumeList());
 		return Result.OK("添加成功！");
 	}
 	
@@ -143,7 +143,7 @@ public class BasSupplierController {
 			return Result.error("未找到对应数据");
 		}
 		basSupplierService.updateMain(basSupplier, basSupplierPage.getBasSupplierContactList(),basSupplierPage.getBasSupplierQualificationList(),
-				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getResumeRemark(), basSupplierPage.getFilePath());
+				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getBasSupplierResumeList());
 		return Result.OK("编辑成功!");
 	}
 	
@@ -348,7 +348,7 @@ public class BasSupplierController {
                   BasSupplier po = new BasSupplier();
                   BeanUtils.copyProperties(page, po);
                   basSupplierService.saveMain(po, page.getBasSupplierContactList(),page.getBasSupplierQualificationList(),
-						  page.getBasSupplierBankList(),page.getBasSupplierFastList(), null, null);
+						  page.getBasSupplierBankList(),page.getBasSupplierFastList(), null);
               }
               return Result.OK("文件导入成功！数据行数:" + list.size());
           } catch (Exception e) {

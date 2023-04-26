@@ -65,7 +65,7 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 	public void saveMain(BasSupplier basSupplier, List<BasSupplierContact> basSupplierContactList,
 						 List<BasSupplierQualification> basSupplierQualificationList,
 						 List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList,
-						 String remark, String filePath) {
+						 List<BasSupplierResume> basSupplierResumeList) {
 		JSONObject formData = new JSONObject();
 		formData.put("prefix", "S");
 		String code = (String) FillRuleUtil.executeRule("supp_code", formData);
@@ -102,12 +102,12 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 			iBasSupplierFastService.saveBatch(basSupplierFastList);
 		}
 		//供应商注册时，添加供应商履历
-		if(StringUtils.isNotEmpty(remark) || StringUtils.isNotEmpty(filePath)){
-			BasSupplierResume basSupplierResume = new BasSupplierResume();
-			basSupplierResume.setSuppId(basSupplier.getId());
-			basSupplierResume.setRemark(remark);
-			basSupplierResume.setFilePath(filePath);
-			basSupplierResumeService.save(basSupplierResume);
+		if(basSupplierResumeList != null && basSupplierResumeList.size()>0) {
+			for(BasSupplierResume entity:basSupplierResumeList) {
+				//basSupplierResumeList
+				entity.setSuppId(basSupplier.getId());
+			}
+			basSupplierResumeService.saveBatch(basSupplierResumeList);
 		}
 	}
 
@@ -116,7 +116,7 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 	public void updateMain(BasSupplier basSupplier,List<BasSupplierContact> basSupplierContactList,
 						   List<BasSupplierQualification> basSupplierQualificationList,
 						   List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList,
-						   String remark, String filePath) {
+						   List<BasSupplierResume> basSupplierResumeList) {
 		this.updateById(basSupplier);
 		
 		//1.先删除子表数据
@@ -124,6 +124,7 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 		iBasSupplierQualificationService.deleteByMainId(basSupplier.getId());
 		iBasSupplierBankService.deleteByMainId(basSupplier.getId());
 		iBasSupplierFastService.remove(Wrappers.<BasSupplierFast>query().lambda().eq(BasSupplierFast :: getSuppId,basSupplier.getId()));
+		basSupplierResumeService.deleteByMainId(basSupplier.getId());
 		
 		//2.子表数据重新插入
 		if(basSupplierContactList != null && basSupplierContactList.size()>0) {
@@ -154,12 +155,13 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 			}
 			iBasSupplierFastService.saveBatch(basSupplierFastList);
 		}
-		if(StringUtils.isNotEmpty(remark) || StringUtils.isNotEmpty(filePath)){
-			BasSupplierResume basSupplierResume = new BasSupplierResume();
-			basSupplierResume.setSuppId(basSupplier.getId());
-			basSupplierResume.setRemark(remark);
-			basSupplierResume.setFilePath(filePath);
-			basSupplierResumeService.updateById(basSupplierResume);
+		//供应商注册时，添加供应商履历
+		if(basSupplierResumeList != null && basSupplierResumeList.size()>0) {
+			for(BasSupplierResume entity:basSupplierResumeList) {
+				//basSupplierResumeList
+				entity.setSuppId(basSupplier.getId());
+			}
+			basSupplierResumeService.saveBatch(basSupplierResumeList);
 		}
 	}
 
@@ -169,6 +171,7 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 		iBasSupplierContactService.deleteByMainId(id);
 		iBasSupplierQualificationService.deleteByMainId(id);
 		iBasSupplierBankService.deleteByMainId(id);
+		basSupplierResumeService.deleteByMainId(id);
 		this.removeById(id);
 	}
 

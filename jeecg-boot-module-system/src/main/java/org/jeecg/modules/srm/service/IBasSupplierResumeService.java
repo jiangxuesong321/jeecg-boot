@@ -20,4 +20,6 @@ public interface IBasSupplierResumeService extends IService<BasSupplierResume> {
      * @return List<BasSupplierResume>
      */
     public List<BasSupplierResume> selectByMainId(String mainId);
+
+    boolean deleteByMainId(String mainId);
 }

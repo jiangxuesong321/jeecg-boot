@@ -27,7 +27,7 @@ public interface IBasSupplierService extends IService<BasSupplier> {
 	 * @param basSupplierQualificationList
 	 */
 	public void saveMain(BasSupplier basSupplier, List<BasSupplierContact> basSupplierContactList, List<BasSupplierQualification> basSupplierQualificationList,
-						 List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList, String remark, String filePath) ;
+						 List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList, List<BasSupplierResume> basSupplierResumeList) ;
 	
 	/**
 	 * 修改一对多
@@ -37,7 +37,7 @@ public interface IBasSupplierService extends IService<BasSupplier> {
    * @param basSupplierQualificationList
 	 */
 	public void updateMain(BasSupplier basSupplier,List<BasSupplierContact> basSupplierContactList,List<BasSupplierQualification> basSupplierQualificationList,
-						   List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList, String remark, String filePath);
+						   List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList, List<BasSupplierResume> basSupplierResumeList);
 	
 	/**
 	 * 删除一对多

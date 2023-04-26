@@ -21,4 +21,13 @@ public interface BasSupplierResumeMapper extends BaseMapper<BasSupplierResume> {
      * @return List<BasSupplierResume>
      */
     public List<BasSupplierResume> selectByMainId(@Param("mainId") String mainId);
+
+    /**
+     * 通过主表id删除子表数据
+     *
+     * @param mainId 主表id
+     * @return boolean
+     */
+    public boolean deleteByMainId(@Param("mainId") String mainId);
+
 }
