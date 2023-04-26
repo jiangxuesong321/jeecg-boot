@@ -1,6 +1,7 @@
 package org.jeecg.modules.srm.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -353,6 +354,48 @@ public class StkIoBillServiceImpl extends ServiceImpl<StkIoBillMapper, StkIoBill
 		ar.setBusinessId(sib.getSendProcessId());
 		ar.setType("send");
 		ar.setStatus("驳回");
+		ar.setName(stkIoBill.getApproverId());
+		ar.setCode(sib.getId());
+		iApproveRecordService.save(ar);
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void handleSapSendPass(StkIoBill stkIoBill) {
+//		LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+//		String username = sysUser.getUsername();
+		Date nowTime = new Date();
+
+//		StkIoBill sib = this.getById(stkIoBill.getId());
+//		//判断是否最后一个人审批
+//		List<ApproveRecord> recordList = iApproveRecordService.list(Wrappers.<ApproveRecord>query().lambda().
+//				eq(ApproveRecord :: getBusinessId,sib.getSendProcessId()).
+//				eq(ApproveRecord :: getDelFlag,CommonConstant.DEL_FLAG_0).
+//				orderByDesc(ApproveRecord :: getCreateTime));
+		LambdaQueryWrapper<StkIoBill> query = new LambdaQueryWrapper<>();
+		query.eq(StkIoBill::getBillNo, stkIoBill.getBillNo());
+		StkIoBill sib = this.getOne(query);
+
+		//更新审批状态
+		sib.setUpdateTime(nowTime);
+		sib.setUpdateBy(stkIoBill.getUsername());
+		sib.setSendStatus("2");
+		this.updateById(sib);
+
+		//生成审批记录
+		ApproveRecord ar = new ApproveRecord();
+		ar.setId(String.valueOf(IdWorker.getId()));
+		ar.setApprover(stkIoBill.getUsername());
+		ar.setApproveComment(stkIoBill.getApproveComment());
+		ar.setDelFlag(CommonConstant.NO_READ_FLAG);
+		ar.setCreateUser(stkIoBill.getUsername());
+		ar.setCreateTime(nowTime);
+		ar.setUpdateTime(nowTime);
+		ar.setUpdateUser(stkIoBill.getUsername());
+		ar.setBusinessId(sib.getSendProcessId());
+		ar.setType("send");
+		ar.setStatus("通过");
 		ar.setName(stkIoBill.getApproverId());
 		ar.setCode(sib.getId());
 		iApproveRecordService.save(ar);
