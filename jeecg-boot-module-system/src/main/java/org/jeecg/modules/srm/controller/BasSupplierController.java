@@ -68,6 +68,9 @@ public class BasSupplierController {
 	@Autowired
 	private IBasSupplierFastService iBasSupplierFastService;
 
+	 @Autowired
+	 private IBasSupplierResumeService basSupplierResumeService;
+
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	/**
 	 * 分页列表查询
@@ -119,7 +122,7 @@ public class BasSupplierController {
 		BasSupplier basSupplier = new BasSupplier();
 		BeanUtils.copyProperties(basSupplierPage, basSupplier);
 		basSupplierService.saveMain(basSupplier, basSupplierPage.getBasSupplierContactList(),basSupplierPage.getBasSupplierQualificationList(),
-				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList());
+				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getResumeRemark(), basSupplierPage.getFilePath());
 		return Result.OK("添加成功！");
 	}
 	
@@ -139,7 +142,8 @@ public class BasSupplierController {
 		if(basSupplierEntity==null) {
 			return Result.error("未找到对应数据");
 		}
-		basSupplierService.updateMain(basSupplier, basSupplierPage.getBasSupplierContactList(),basSupplierPage.getBasSupplierQualificationList(),basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList());
+		basSupplierService.updateMain(basSupplier, basSupplierPage.getBasSupplierContactList(),basSupplierPage.getBasSupplierQualificationList(),
+				basSupplierPage.getBasSupplierBankList(),basSupplierPage.getBasSupplierFastList(), basSupplierPage.getResumeRemark(), basSupplierPage.getFilePath());
 		return Result.OK("编辑成功!");
 	}
 	
@@ -247,6 +251,20 @@ public class BasSupplierController {
 		 return Result.OK(basSupplierFastList);
 	 }
 
+	 /**
+	  * 通过id查询
+	  *
+	  * @param id
+	  * @return
+	  */
+	 //@AutoLog(value = "供应商资质证书通过主表ID查询")
+	 @ApiOperation(value="供应商资质证书主表ID查询", notes="供应商资质证书-通主表ID查询")
+	 @GetMapping(value = "/queryBasSupplierResumeByMainId")
+	 public Result<List<BasSupplierResume>> queryBasSupplierResumeByMainId(@RequestParam(name="id",required=true) String id) {
+		 List<BasSupplierResume> basSupplierResumeList = basSupplierResumeService.selectByMainId(id);
+		 return Result.OK(basSupplierResumeList);
+	 }
+
     /**
     * 导出excel
     *
@@ -329,7 +347,8 @@ public class BasSupplierController {
               for (BasSupplierPage page : list) {
                   BasSupplier po = new BasSupplier();
                   BeanUtils.copyProperties(page, po);
-                  basSupplierService.saveMain(po, page.getBasSupplierContactList(),page.getBasSupplierQualificationList(),page.getBasSupplierBankList(),page.getBasSupplierFastList());
+                  basSupplierService.saveMain(po, page.getBasSupplierContactList(),page.getBasSupplierQualificationList(),
+						  page.getBasSupplierBankList(),page.getBasSupplierFastList(), null, null);
               }
               return Result.OK("文件导入成功！数据行数:" + list.size());
           } catch (Exception e) {

@@ -59,4 +59,7 @@ public class BasSupplierResume implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @ApiModelProperty(value = "修改时间")
     private java.util.Date updateTime;
+    /**文件路径*/
+    @ApiModelProperty(value = "文件路径")
+    private java.lang.String filePath;
 }
