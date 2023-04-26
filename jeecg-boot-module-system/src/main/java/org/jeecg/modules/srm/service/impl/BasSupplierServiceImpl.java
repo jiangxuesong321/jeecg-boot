@@ -57,11 +57,15 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 	@Autowired
 	private IBasSupplierFastService iBasSupplierFastService;
 
+	@Autowired
+	private IBasSupplierResumeService basSupplierResumeService;
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void saveMain(BasSupplier basSupplier, List<BasSupplierContact> basSupplierContactList,
 						 List<BasSupplierQualification> basSupplierQualificationList,
-						 List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList) {
+						 List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList,
+						 String remark, String filePath) {
 		JSONObject formData = new JSONObject();
 		formData.put("prefix", "S");
 		String code = (String) FillRuleUtil.executeRule("supp_code", formData);
@@ -97,13 +101,22 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 			}
 			iBasSupplierFastService.saveBatch(basSupplierFastList);
 		}
+		//供应商注册时，添加供应商履历
+		if(StringUtils.isNotEmpty(remark) || StringUtils.isNotEmpty(filePath)){
+			BasSupplierResume basSupplierResume = new BasSupplierResume();
+			basSupplierResume.setSuppId(basSupplier.getId());
+			basSupplierResume.setRemark(remark);
+			basSupplierResume.setFilePath(filePath);
+			basSupplierResumeService.save(basSupplierResume);
+		}
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void updateMain(BasSupplier basSupplier,List<BasSupplierContact> basSupplierContactList,
 						   List<BasSupplierQualification> basSupplierQualificationList,
-						   List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList) {
+						   List<BasSupplierBank> basSupplierBankList, List<BasSupplierFast> basSupplierFastList,
+						   String remark, String filePath) {
 		this.updateById(basSupplier);
 		
 		//1.先删除子表数据
@@ -113,7 +126,7 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 		iBasSupplierFastService.remove(Wrappers.<BasSupplierFast>query().lambda().eq(BasSupplierFast :: getSuppId,basSupplier.getId()));
 		
 		//2.子表数据重新插入
-		if(basSupplierContactList!=null && basSupplierContactList.size()>0) {
+		if(basSupplierContactList != null && basSupplierContactList.size()>0) {
 			for(BasSupplierContact entity:basSupplierContactList) {
 				//外键设置
 				entity.setSupplierId(basSupplier.getId());
@@ -140,6 +153,13 @@ public class BasSupplierServiceImpl extends ServiceImpl<BasSupplierMapper, BasSu
 				entity.setSuppId(basSupplier.getId());
 			}
 			iBasSupplierFastService.saveBatch(basSupplierFastList);
+		}
+		if(StringUtils.isNotEmpty(remark) || StringUtils.isNotEmpty(filePath)){
+			BasSupplierResume basSupplierResume = new BasSupplierResume();
+			basSupplierResume.setSuppId(basSupplier.getId());
+			basSupplierResume.setRemark(remark);
+			basSupplierResume.setFilePath(filePath);
+			basSupplierResumeService.updateById(basSupplierResume);
 		}
 	}
 

@@ -139,6 +139,8 @@ public class BasSupplierResumeController extends JeecgController<BasSupplierResu
 		return Result.OK(basSupplierResume);
 	}
 
+
+
     /**
     * 导出excel
     *
