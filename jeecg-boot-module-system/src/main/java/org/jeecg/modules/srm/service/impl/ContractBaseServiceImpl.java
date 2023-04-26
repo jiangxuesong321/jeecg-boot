@@ -1,6 +1,7 @@
 package org.jeecg.modules.srm.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -25,6 +26,7 @@ import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.cas.util.HttpURLConnectionUtil;
 import org.jeecg.modules.srm.entity.*;
 import org.jeecg.modules.srm.mapper.ContractBaseMapper;
+import org.jeecg.modules.srm.mapper.PurchaseOrderMainMapper;
 import org.jeecg.modules.srm.service.*;
 import org.jeecg.modules.srm.utils.JeecgEntityExcel;
 import org.jeecg.modules.srm.utils.JeecgExcelView;
@@ -94,6 +96,9 @@ public class ContractBaseServiceImpl extends ServiceImpl<ContractBaseMapper, Con
 	private ISysDictService iSysDictService;
 	@Autowired
 	private IContractObjectChildService iContractObjectChildService;
+
+	@Autowired
+	private PurchaseOrderMainMapper purchaseOrderMainMapper;
 
 
 	@Value("${jeecg.path.upload}")
@@ -348,6 +353,15 @@ public class ContractBaseServiceImpl extends ServiceImpl<ContractBaseMapper, Con
 		}
 
 		this.saveOrUpdate(contractBase);
+
+		//将合同编号更新进去
+		LambdaQueryWrapper<PurchaseOrderMain> query = new LambdaQueryWrapper<>();
+		query.eq(PurchaseOrderMain::getBiddingNo, contractBase.getBiddingNo());
+		PurchaseOrderMain purchaseOrderMain = purchaseOrderMainMapper.selectOne(query);
+		if (purchaseOrderMain != null && purchaseOrderMain.getBiddingNo() != null) {
+			purchaseOrderMain.setContactId(contractBase.getId());
+			purchaseOrderMainMapper.updateById(purchaseOrderMain);
+		}
 
 		//更新招标状态,已生成合同
 		if("1".equals(contractBase.getSource())){
@@ -615,6 +629,15 @@ public class ContractBaseServiceImpl extends ServiceImpl<ContractBaseMapper, Con
 			iContractObjectService.saveOrUpdateBatch(contractObjectList);
 		}
 		this.saveOrUpdate(contractBase);
+
+		//将合同编号更新进去
+		LambdaQueryWrapper<PurchaseOrderMain> query = new LambdaQueryWrapper<>();
+		query.eq(PurchaseOrderMain::getBiddingNo, contractBase.getBiddingNo());
+		PurchaseOrderMain purchaseOrderMain = purchaseOrderMainMapper.selectOne(query);
+		if (purchaseOrderMain != null && purchaseOrderMain.getBiddingNo() != null) {
+			purchaseOrderMain.setContactId(contractBase.getId());
+			purchaseOrderMainMapper.updateById(purchaseOrderMain);
+		}
 
 
 		//更新招标状态,已生成合同

@@ -150,6 +150,7 @@ public class ShiroConfig {
 
         //sap调用的接口
         filterChainDefinitionMap.put("/srm/stkIoBill/handleSapSendPass", "anon");
+        filterChainDefinitionMap.put("/srm/dataImport/material", "anon");
 
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
