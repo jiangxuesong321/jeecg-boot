@@ -103,4 +103,6 @@ public interface IStkIoBillService extends IService<StkIoBill> {
 	 * @param stkIoBill
 	 */
 	void handleSendReject(StkIoBill stkIoBill);
+
+	void handleSapSendPass(StkIoBill stkIoBill);
 }

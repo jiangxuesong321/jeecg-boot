@@ -713,4 +713,19 @@ public class StkIoBillController {
 		 return Result.OK("提交成功!");
 	 }
 
+
+	 /**
+	  *   sap发起直接发货审批通过
+	  *
+	  * @param stkIoBill
+	  * @return
+	  */
+	 @AutoLog(value = "发货审批通过")
+	 @PostMapping(value = "/handleSapSendPass")
+	 public Result<String> handleSapSendPass(@RequestBody StkIoBill stkIoBill) {
+		 stkIoBillService.handleSapSendPass(stkIoBill);
+
+		 return Result.OK("提交成功！");
+	 }
+
  }
